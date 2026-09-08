@@ -23,6 +23,9 @@ app.use(express.urlencoded({ extended: false }));
 const authRoutes = require("./routes/auth.routes");
 app.use("/auth", authRoutes);
 
+const tierListRoutes = require("./routes/tierlist.routes");
+app.use("/api/tierlists", tierListRoutes);
+
 // Petite route pour vérifier que le serveur tourne
 app.get("/", (req, res) => {
   res.json({ message: "API Tier Lists de jeux vidéo" });
