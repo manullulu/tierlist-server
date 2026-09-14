@@ -35,6 +35,9 @@ app.use("/api/tierlists", voteRoutes);
 const commentRoutes = require("./routes/comment.routes");
 app.use("/api", commentRoutes);
 
+const gameRoutes = require("./routes/game.routes");
+app.use("/api/games", gameRoutes);
+
 const userRoutes = require("./routes/user.routes");
 app.use("/api/users", userRoutes);
 
