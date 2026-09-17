@@ -5,6 +5,8 @@ Stack : Node.js, Express 5, MongoDB / Mongoose, JWT.
 
 Le front React est dans le repo `tierlist-client`.
 
+**API en ligne :** https://tierlist-server.onrender.com (Render, base de données sur MongoDB Atlas)
+
 ## Installation
 
 ```bash
