@@ -10,12 +10,12 @@ router.get("/search", async (req, res, next) => {
   const query = req.query.q;
 
   if (!query || query.trim() === "") {
-    res.status(400).json({ message: "Merci de saisir un terme de recherche." });
+    res.status(400).json({ message: "Please enter a search term." });
     return;
   }
 
   if (!process.env.RAWG_API_KEY) {
-    res.status(500).json({ message: "La clé API RAWG n'est pas configurée sur le serveur." });
+    res.status(500).json({ message: "The RAWG API key is not set on the server." });
     return;
   }
 
@@ -30,7 +30,7 @@ router.get("/search", async (req, res, next) => {
     const response = await fetch(url);
 
     if (!response.ok) {
-      res.status(502).json({ message: "L'API RAWG n'a pas répondu correctement." });
+      res.status(502).json({ message: "The RAWG API did not answer correctly." });
       return;
     }
 
@@ -60,7 +60,7 @@ router.get("/:gameId", async (req, res, next) => {
   const gameId = req.params.gameId;
 
   if (!process.env.RAWG_API_KEY) {
-    res.status(500).json({ message: "La clé API RAWG n'est pas configurée sur le serveur." });
+    res.status(500).json({ message: "The RAWG API key is not set on the server." });
     return;
   }
 
@@ -70,12 +70,12 @@ router.get("/:gameId", async (req, res, next) => {
     const response = await fetch(url);
 
     if (response.status === 404) {
-      res.status(404).json({ message: "Jeu introuvable." });
+      res.status(404).json({ message: "Game not found." });
       return;
     }
 
     if (!response.ok) {
-      res.status(502).json({ message: "L'API RAWG n'a pas répondu correctement." });
+      res.status(502).json({ message: "The RAWG API did not answer correctly." });
       return;
     }
 

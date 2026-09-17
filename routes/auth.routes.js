@@ -18,20 +18,20 @@ router.post("/signup", async (req, res, next) => {
 
   // Vérification des champs obligatoires
   if (!email || !password || !name) {
-    res.status(400).json({ message: "Merci de remplir l'email, le mot de passe et le nom." });
+    res.status(400).json({ message: "Please fill in the email, the password and the name." });
     return;
   }
 
   // Vérification du format de l'email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
-    res.status(400).json({ message: "L'adresse email n'est pas valide." });
+    res.status(400).json({ message: "The email address is not valid." });
     return;
   }
 
   // Vérification de la longueur du mot de passe
   if (password.length < 6) {
-    res.status(400).json({ message: "Le mot de passe doit contenir au moins 6 caractères." });
+    res.status(400).json({ message: "The password must be at least 6 characters long." });
     return;
   }
 
@@ -40,7 +40,7 @@ router.post("/signup", async (req, res, next) => {
     const existingUser = await User.findOne({ email: email });
 
     if (existingUser) {
-      res.status(400).json({ message: "Cet email est déjà utilisé." });
+      res.status(400).json({ message: "This email is already used." });
       return;
     }
 
@@ -76,7 +76,7 @@ router.post("/login", async (req, res, next) => {
   const password = req.body.password;
 
   if (!email || !password) {
-    res.status(400).json({ message: "Merci de remplir l'email et le mot de passe." });
+    res.status(400).json({ message: "Please fill in the email and the password." });
     return;
   }
 
@@ -84,14 +84,14 @@ router.post("/login", async (req, res, next) => {
     const foundUser = await User.findOne({ email: email });
 
     if (!foundUser) {
-      res.status(401).json({ message: "Email ou mot de passe incorrect." });
+      res.status(401).json({ message: "Wrong email or password." });
       return;
     }
 
     const passwordCorrect = bcrypt.compareSync(password, foundUser.password);
 
     if (!passwordCorrect) {
-      res.status(401).json({ message: "Email ou mot de passe incorrect." });
+      res.status(401).json({ message: "Wrong email or password." });
       return;
     }
 

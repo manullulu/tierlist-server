@@ -135,7 +135,7 @@ router.get("/:id", readTokenIfPresent, async (req, res, next) => {
     const tierList = await TierList.findById(tierListId).populate("owner", "name avatar");
 
     if (!tierList) {
-      res.status(404).json({ message: "Tier list introuvable." });
+      res.status(404).json({ message: "Tier list not found." });
       return;
     }
 
@@ -153,7 +153,7 @@ router.get("/:id", readTokenIfPresent, async (req, res, next) => {
       }
 
       if (!allowed) {
-        res.status(403).json({ message: "Cette tier list est privée." });
+        res.status(403).json({ message: "This tier list is private." });
         return;
       }
     }
@@ -210,7 +210,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
   const tiers = req.body.tiers;
 
   if (!title) {
-    res.status(400).json({ message: "Le titre est obligatoire." });
+    res.status(400).json({ message: "The title is required." });
     return;
   }
 
@@ -250,7 +250,7 @@ router.put("/:id", isAuthenticated, async (req, res, next) => {
     const tierList = await TierList.findById(tierListId);
 
     if (!tierList) {
-      res.status(404).json({ message: "Tier list introuvable." });
+      res.status(404).json({ message: "Tier list not found." });
       return;
     }
 
@@ -258,7 +258,7 @@ router.put("/:id", isAuthenticated, async (req, res, next) => {
     const isAdmin = req.payload.role === "admin";
 
     if (!isOwner && !isAdmin) {
-      res.status(403).json({ message: "Vous n'avez pas le droit de modifier cette tier list." });
+      res.status(403).json({ message: "You are not allowed to edit this tier list." });
       return;
     }
 
@@ -306,7 +306,7 @@ router.delete("/:id", isAuthenticated, async (req, res, next) => {
     const tierList = await TierList.findById(tierListId);
 
     if (!tierList) {
-      res.status(404).json({ message: "Tier list introuvable." });
+      res.status(404).json({ message: "Tier list not found." });
       return;
     }
 
@@ -314,7 +314,7 @@ router.delete("/:id", isAuthenticated, async (req, res, next) => {
     const isAdmin = req.payload.role === "admin";
 
     if (!isOwner && !isAdmin) {
-      res.status(403).json({ message: "Vous n'avez pas le droit de supprimer cette tier list." });
+      res.status(403).json({ message: "You are not allowed to delete this tier list." });
       return;
     }
 
@@ -324,7 +324,7 @@ router.delete("/:id", isAuthenticated, async (req, res, next) => {
     await Comment.deleteMany({ tierList: tierListId });
     await TierList.findByIdAndDelete(tierListId);
 
-    res.status(200).json({ message: "Tier list supprimée." });
+    res.status(200).json({ message: "Tier list deleted." });
   } catch (error) {
     next(error);
   }

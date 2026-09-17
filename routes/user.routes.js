@@ -12,7 +12,7 @@ router.get("/:id", async (req, res, next) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      res.status(404).json({ message: "Utilisateur introuvable." });
+      res.status(404).json({ message: "User not found." });
       return;
     }
 

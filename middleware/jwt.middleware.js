@@ -6,7 +6,7 @@ function isAuthenticated(req, res, next) {
   const authorizationHeader = req.headers.authorization;
 
   if (!authorizationHeader) {
-    res.status(401).json({ message: "Token manquant. Vous devez être connecté." });
+    res.status(401).json({ message: "Missing token. You must be logged in." });
     return;
   }
 
@@ -14,7 +14,7 @@ function isAuthenticated(req, res, next) {
   const parts = authorizationHeader.split(" ");
 
   if (parts.length !== 2 || parts[0] !== "Bearer") {
-    res.status(401).json({ message: "Format du token invalide." });
+    res.status(401).json({ message: "Invalid token format." });
     return;
   }
 
@@ -25,7 +25,7 @@ function isAuthenticated(req, res, next) {
     req.payload = payload;
     next();
   } catch (error) {
-    res.status(401).json({ message: "Token invalide ou expiré." });
+    res.status(401).json({ message: "Invalid or expired token." });
   }
 }
 

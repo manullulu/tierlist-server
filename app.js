@@ -43,7 +43,7 @@ app.use("/api/users", userRoutes);
 
 // Petite route pour vérifier que le serveur tourne
 app.get("/", (req, res) => {
-  res.json({ message: "API Tier Lists de jeux vidéo" });
+  res.json({ message: "Video game tier lists API" });
 });
 
 // Gestion des erreurs (404 et 500) - toujours en dernier

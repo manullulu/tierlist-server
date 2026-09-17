@@ -15,7 +15,7 @@ router.post("/:id/items", isAuthenticated, async (req, res, next) => {
   const tier = req.body.tier;
 
   if (!gameId || !gameName) {
-    res.status(400).json({ message: "L'identifiant et le nom du jeu sont obligatoires." });
+    res.status(400).json({ message: "The id and the name of the game are required." });
     return;
   }
 
@@ -23,7 +23,7 @@ router.post("/:id/items", isAuthenticated, async (req, res, next) => {
     const tierList = await TierList.findById(tierListId);
 
     if (!tierList) {
-      res.status(404).json({ message: "Tier list introuvable." });
+      res.status(404).json({ message: "Tier list not found." });
       return;
     }
 
@@ -31,7 +31,7 @@ router.post("/:id/items", isAuthenticated, async (req, res, next) => {
     const isAdmin = req.payload.role === "admin";
 
     if (!isOwner && !isAdmin) {
-      res.status(403).json({ message: "Vous n'avez pas le droit de modifier cette tier list." });
+      res.status(403).json({ message: "You are not allowed to edit this tier list." });
       return;
     }
 
@@ -39,7 +39,7 @@ router.post("/:id/items", isAuthenticated, async (req, res, next) => {
     const alreadyThere = await TierListItem.findOne({ tierList: tierListId, gameId: gameId });
 
     if (alreadyThere) {
-      res.status(400).json({ message: "Ce jeu est déjà dans la tier list." });
+      res.status(400).json({ message: "This game is already in the tier list." });
       return;
     }
 
@@ -80,7 +80,7 @@ router.put("/:id/items/:itemId", isAuthenticated, async (req, res, next) => {
     const tierList = await TierList.findById(tierListId);
 
     if (!tierList) {
-      res.status(404).json({ message: "Tier list introuvable." });
+      res.status(404).json({ message: "Tier list not found." });
       return;
     }
 
@@ -88,14 +88,14 @@ router.put("/:id/items/:itemId", isAuthenticated, async (req, res, next) => {
     const isAdmin = req.payload.role === "admin";
 
     if (!isOwner && !isAdmin) {
-      res.status(403).json({ message: "Vous n'avez pas le droit de modifier cette tier list." });
+      res.status(403).json({ message: "You are not allowed to edit this tier list." });
       return;
     }
 
     const item = await TierListItem.findById(itemId);
 
     if (!item || item.tierList.toString() !== tierListId) {
-      res.status(404).json({ message: "Jeu introuvable dans cette tier list." });
+      res.status(404).json({ message: "Game not found in this tier list." });
       return;
     }
 
@@ -112,7 +112,7 @@ router.put("/:id/items/:itemId", isAuthenticated, async (req, res, next) => {
       }
 
       if (!tierExists) {
-        res.status(400).json({ message: "Ce rang n'existe pas dans cette tier list." });
+        res.status(400).json({ message: "This rank does not exist in this tier list." });
         return;
       }
 
@@ -149,7 +149,7 @@ router.delete("/:id/items/:itemId", isAuthenticated, async (req, res, next) => {
     const tierList = await TierList.findById(tierListId);
 
     if (!tierList) {
-      res.status(404).json({ message: "Tier list introuvable." });
+      res.status(404).json({ message: "Tier list not found." });
       return;
     }
 
@@ -157,20 +157,20 @@ router.delete("/:id/items/:itemId", isAuthenticated, async (req, res, next) => {
     const isAdmin = req.payload.role === "admin";
 
     if (!isOwner && !isAdmin) {
-      res.status(403).json({ message: "Vous n'avez pas le droit de modifier cette tier list." });
+      res.status(403).json({ message: "You are not allowed to edit this tier list." });
       return;
     }
 
     const item = await TierListItem.findById(itemId);
 
     if (!item || item.tierList.toString() !== tierListId) {
-      res.status(404).json({ message: "Jeu introuvable dans cette tier list." });
+      res.status(404).json({ message: "Game not found in this tier list." });
       return;
     }
 
     await TierListItem.findByIdAndDelete(itemId);
 
-    res.status(200).json({ message: "Jeu retiré de la tier list." });
+    res.status(200).json({ message: "Game removed from the tier list." });
   } catch (error) {
     next(error);
   }

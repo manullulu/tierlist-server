@@ -4,7 +4,7 @@ const tierListSchema = new Schema(
   {
     title: {
       type: String,
-      required: [true, "Le titre est obligatoire."],
+      required: [true, "The title is required."],
       trim: true,
       maxlength: 100,
     },

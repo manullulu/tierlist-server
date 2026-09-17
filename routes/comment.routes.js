@@ -27,12 +27,12 @@ router.post("/tierlists/:id/comments", isAuthenticated, async (req, res, next) =
   const content = req.body.content;
 
   if (!content || content.trim() === "") {
-    res.status(400).json({ message: "Le commentaire ne peut pas être vide." });
+    res.status(400).json({ message: "The comment cannot be empty." });
     return;
   }
 
   if (content.length > 500) {
-    res.status(400).json({ message: "Le commentaire ne peut pas dépasser 500 caractères." });
+    res.status(400).json({ message: "The comment cannot be longer than 500 characters." });
     return;
   }
 
@@ -40,7 +40,7 @@ router.post("/tierlists/:id/comments", isAuthenticated, async (req, res, next) =
     const tierList = await TierList.findById(tierListId);
 
     if (!tierList) {
-      res.status(404).json({ message: "Tier list introuvable." });
+      res.status(404).json({ message: "Tier list not found." });
       return;
     }
 
@@ -65,12 +65,12 @@ router.put("/comments/:commentId", isAuthenticated, async (req, res, next) => {
   const content = req.body.content;
 
   if (!content || content.trim() === "") {
-    res.status(400).json({ message: "Le commentaire ne peut pas être vide." });
+    res.status(400).json({ message: "The comment cannot be empty." });
     return;
   }
 
   if (content.length > 500) {
-    res.status(400).json({ message: "Le commentaire ne peut pas dépasser 500 caractères." });
+    res.status(400).json({ message: "The comment cannot be longer than 500 characters." });
     return;
   }
 
@@ -78,14 +78,14 @@ router.put("/comments/:commentId", isAuthenticated, async (req, res, next) => {
     const comment = await Comment.findById(commentId);
 
     if (!comment) {
-      res.status(404).json({ message: "Commentaire introuvable." });
+      res.status(404).json({ message: "Comment not found." });
       return;
     }
 
     const isAuthor = comment.author.toString() === req.payload._id;
 
     if (!isAuthor) {
-      res.status(403).json({ message: "Vous ne pouvez modifier que vos propres commentaires." });
+      res.status(403).json({ message: "You can only edit your own comments." });
       return;
     }
 
@@ -108,7 +108,7 @@ router.delete("/comments/:commentId", isAuthenticated, async (req, res, next) =>
     const comment = await Comment.findById(commentId);
 
     if (!comment) {
-      res.status(404).json({ message: "Commentaire introuvable." });
+      res.status(404).json({ message: "Comment not found." });
       return;
     }
 
@@ -116,13 +116,13 @@ router.delete("/comments/:commentId", isAuthenticated, async (req, res, next) =>
     const isAdmin = req.payload.role === "admin";
 
     if (!isAuthor && !isAdmin) {
-      res.status(403).json({ message: "Vous n'avez pas le droit de supprimer ce commentaire." });
+      res.status(403).json({ message: "You are not allowed to delete this comment." });
       return;
     }
 
     await Comment.findByIdAndDelete(commentId);
 
-    res.status(200).json({ message: "Commentaire supprimé." });
+    res.status(200).json({ message: "Comment deleted." });
   } catch (error) {
     next(error);
   }

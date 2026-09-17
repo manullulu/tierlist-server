@@ -13,7 +13,7 @@ router.post("/:id/vote", isAuthenticated, async (req, res, next) => {
   const value = req.body.value;
 
   if (value !== 1 && value !== -1) {
-    res.status(400).json({ message: "La valeur du vote doit être 1 ou -1." });
+    res.status(400).json({ message: "The vote value must be 1 or -1." });
     return;
   }
 
@@ -21,7 +21,7 @@ router.post("/:id/vote", isAuthenticated, async (req, res, next) => {
     const tierList = await TierList.findById(tierListId);
 
     if (!tierList) {
-      res.status(404).json({ message: "Tier list introuvable." });
+      res.status(404).json({ message: "Tier list not found." });
       return;
     }
 

@@ -14,9 +14,9 @@ const commentSchema = new Schema(
     },
     content: {
       type: String,
-      required: [true, "Le commentaire ne peut pas être vide."],
+      required: [true, "The comment cannot be empty."],
       trim: true,
-      maxlength: [500, "Le commentaire ne peut pas dépasser 500 caractères."],
+      maxlength: [500, "The comment cannot be longer than 500 characters."],
     },
   },
   {

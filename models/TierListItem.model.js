@@ -9,11 +9,11 @@ const tierListItemSchema = new Schema(
     },
     gameId: {
       type: Number,
-      required: [true, "L'identifiant RAWG du jeu est obligatoire."],
+      required: [true, "The RAWG id of the game is required."],
     },
     gameName: {
       type: String,
-      required: [true, "Le nom du jeu est obligatoire."],
+      required: [true, "The game name is required."],
     },
     gameImage: {
       type: String,
