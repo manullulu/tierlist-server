@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/User.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware");
+const { signupSchema, loginSchema } = require("../validation/auth.validation");
 
 const router = express.Router();
 
@@ -11,29 +12,18 @@ const saltRounds = 10;
 
 // POST /auth/signup - Crée un nouvel utilisateur
 router.post("/signup", async (req, res, next) => {
-  const email = req.body.email;
-  const password = req.body.password;
-  const name = req.body.name;
-  const avatar = req.body.avatar;
+  // On vérifie les données envoyées avec le schéma zod
+  const validation = signupSchema.safeParse(req.body);
 
-  // Vérification des champs obligatoires
-  if (!email || !password || !name) {
-    res.status(400).json({ message: "Please fill in the email, the password and the name." });
+  if (!validation.success) {
+    res.status(400).json({ message: validation.error.issues[0].message });
     return;
   }
 
-  // Vérification du format de l'email
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    res.status(400).json({ message: "The email address is not valid." });
-    return;
-  }
-
-  // Vérification de la longueur du mot de passe
-  if (password.length < 6) {
-    res.status(400).json({ message: "The password must be at least 6 characters long." });
-    return;
-  }
+  const email = validation.data.email;
+  const password = validation.data.password;
+  const name = validation.data.name;
+  const avatar = validation.data.avatar;
 
   try {
     // On vérifie que l'email n'est pas déjà pris
@@ -72,13 +62,16 @@ router.post("/signup", async (req, res, next) => {
 
 // POST /auth/login - Vérifie les identifiants et renvoie un token JWT
 router.post("/login", async (req, res, next) => {
-  const email = req.body.email;
-  const password = req.body.password;
+  // On vérifie les données envoyées avec le schéma zod
+  const validation = loginSchema.safeParse(req.body);
 
-  if (!email || !password) {
-    res.status(400).json({ message: "Please fill in the email and the password." });
+  if (!validation.success) {
+    res.status(400).json({ message: validation.error.issues[0].message });
     return;
   }
+
+  const email = validation.data.email;
+  const password = validation.data.password;
 
   try {
     const foundUser = await User.findOne({ email: email });

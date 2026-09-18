@@ -3,6 +3,7 @@ const express = require("express");
 const TierList = require("../models/TierList.model");
 const Comment = require("../models/Comment.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware");
+const { commentSchema } = require("../validation/comment.validation");
 
 const router = express.Router();
 
@@ -24,17 +25,16 @@ router.get("/tierlists/:id/comments", async (req, res, next) => {
 // POST /api/tierlists/:id/comments - Ajoute un commentaire (connecté)
 router.post("/tierlists/:id/comments", isAuthenticated, async (req, res, next) => {
   const tierListId = req.params.id;
-  const content = req.body.content;
 
-  if (!content || content.trim() === "") {
-    res.status(400).json({ message: "The comment cannot be empty." });
+  // On vérifie les données envoyées avec le schéma zod
+  const validation = commentSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    res.status(400).json({ message: validation.error.issues[0].message });
     return;
   }
 
-  if (content.length > 500) {
-    res.status(400).json({ message: "The comment cannot be longer than 500 characters." });
-    return;
-  }
+  const content = validation.data.content;
 
   try {
     const tierList = await TierList.findById(tierListId);
@@ -62,17 +62,16 @@ router.post("/tierlists/:id/comments", isAuthenticated, async (req, res, next) =
 // PUT /api/comments/:commentId - Modifie un commentaire (auteur uniquement)
 router.put("/comments/:commentId", isAuthenticated, async (req, res, next) => {
   const commentId = req.params.commentId;
-  const content = req.body.content;
 
-  if (!content || content.trim() === "") {
-    res.status(400).json({ message: "The comment cannot be empty." });
+  // On vérifie les données envoyées avec le schéma zod
+  const validation = commentSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    res.status(400).json({ message: validation.error.issues[0].message });
     return;
   }
 
-  if (content.length > 500) {
-    res.status(400).json({ message: "The comment cannot be longer than 500 characters." });
-    return;
-  }
+  const content = validation.data.content;
 
   try {
     const comment = await Comment.findById(commentId);

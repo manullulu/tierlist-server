@@ -3,6 +3,7 @@ const express = require("express");
 const TierList = require("../models/TierList.model");
 const Vote = require("../models/Vote.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware");
+const { voteSchema } = require("../validation/vote.validation");
 
 const router = express.Router();
 
@@ -10,12 +11,16 @@ const router = express.Router();
 // Si l'utilisateur a déjà voté, son vote est remplacé (upsert)
 router.post("/:id/vote", isAuthenticated, async (req, res, next) => {
   const tierListId = req.params.id;
-  const value = req.body.value;
 
-  if (value !== 1 && value !== -1) {
-    res.status(400).json({ message: "The vote value must be 1 or -1." });
+  // On vérifie les données envoyées avec le schéma zod
+  const validation = voteSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    res.status(400).json({ message: validation.error.issues[0].message });
     return;
   }
+
+  const value = validation.data.value;
 
   try {
     const tierList = await TierList.findById(tierListId);

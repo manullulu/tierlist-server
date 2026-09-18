@@ -3,21 +3,26 @@ const express = require("express");
 const TierList = require("../models/TierList.model");
 const TierListItem = require("../models/TierListItem.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware");
+const { addItemSchema, updateItemSchema } = require("../validation/item.validation");
 
 const router = express.Router();
 
 // POST /api/tierlists/:id/items - Ajoute un jeu à une tier list (propriétaire ou admin)
 router.post("/:id/items", isAuthenticated, async (req, res, next) => {
   const tierListId = req.params.id;
-  const gameId = req.body.gameId;
-  const gameName = req.body.gameName;
-  const gameImage = req.body.gameImage;
-  const tier = req.body.tier;
 
-  if (!gameId || !gameName) {
-    res.status(400).json({ message: "The id and the name of the game are required." });
+  // On vérifie les données envoyées avec le schéma zod
+  const validation = addItemSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    res.status(400).json({ message: validation.error.issues[0].message });
     return;
   }
+
+  const gameId = validation.data.gameId;
+  const gameName = validation.data.gameName;
+  const gameImage = validation.data.gameImage;
+  const tier = validation.data.tier;
 
   try {
     const tierList = await TierList.findById(tierListId);
@@ -73,8 +78,17 @@ router.post("/:id/items", isAuthenticated, async (req, res, next) => {
 router.put("/:id/items/:itemId", isAuthenticated, async (req, res, next) => {
   const tierListId = req.params.id;
   const itemId = req.params.itemId;
-  const tier = req.body.tier;
-  const position = req.body.position;
+
+  // On vérifie les données envoyées avec le schéma zod
+  const validation = updateItemSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    res.status(400).json({ message: validation.error.issues[0].message });
+    return;
+  }
+
+  const tier = validation.data.tier;
+  const position = validation.data.position;
 
   try {
     const tierList = await TierList.findById(tierListId);

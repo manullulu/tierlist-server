@@ -1,7 +1,7 @@
 # TierList - API (tierlist-server)
 
 API REST du projet **TierList** : créer, partager, voter et commenter des classements de jeux vidéo.
-Stack : Node.js, Express 5, MongoDB / Mongoose, JWT.
+Stack : Node.js, Express 5, MongoDB / Mongoose, JWT, zod.
 
 Le front React est dans le repo `tierlist-client`.
 
@@ -102,6 +102,9 @@ Le front ne contacte jamais RAWG directement : la clé API reste côté serveur.
 - **Rôle admin** : un admin peut supprimer n'importe quelle tier list ou commentaire. Pour promouvoir
   un compte, changer son champ `role` en `admin` directement dans MongoDB.
 - **Suppression en cascade** : supprimer une tier list supprime aussi ses items, votes et commentaires.
+- **Validation des entrées avec zod** : chaque route POST / PUT vérifie le corps de la requête avec un
+  schéma du dossier `validation/` avant de toucher à la base. Le premier problème rencontré est renvoyé
+  en 400 avec un message clair.
 - **Middleware d'erreurs centralisé** : erreurs de validation Mongoose → 400, identifiant mal formé → 400,
   doublon → 400, tout le reste → 500.
 

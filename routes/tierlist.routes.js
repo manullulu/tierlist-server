@@ -5,6 +5,7 @@ const TierListItem = require("../models/TierListItem.model");
 const Vote = require("../models/Vote.model");
 const Comment = require("../models/Comment.model");
 const { isAuthenticated, readTokenIfPresent } = require("../middleware/jwt.middleware");
+const { createTierListSchema, updateTierListSchema } = require("../validation/tierlist.validation");
 
 const router = express.Router();
 
@@ -204,15 +205,18 @@ router.get("/:id", readTokenIfPresent, async (req, res, next) => {
 
 // POST /api/tierlists - Crée une tier list (connecté)
 router.post("/", isAuthenticated, async (req, res, next) => {
-  const title = req.body.title;
-  const description = req.body.description;
-  const isPublic = req.body.isPublic;
-  const tiers = req.body.tiers;
+  // On vérifie les données envoyées avec le schéma zod
+  const validation = createTierListSchema.safeParse(req.body);
 
-  if (!title) {
-    res.status(400).json({ message: "The title is required." });
+  if (!validation.success) {
+    res.status(400).json({ message: validation.error.issues[0].message });
     return;
   }
+
+  const title = validation.data.title;
+  const description = validation.data.description;
+  const isPublic = validation.data.isPublic;
+  const tiers = validation.data.tiers;
 
   try {
     const newTierList = {
@@ -241,10 +245,19 @@ router.post("/", isAuthenticated, async (req, res, next) => {
 // PUT /api/tierlists/:id - Modifie une tier list (propriétaire ou admin)
 router.put("/:id", isAuthenticated, async (req, res, next) => {
   const tierListId = req.params.id;
-  const title = req.body.title;
-  const description = req.body.description;
-  const isPublic = req.body.isPublic;
-  const tiers = req.body.tiers;
+
+  // On vérifie les données envoyées avec le schéma zod
+  const validation = updateTierListSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    res.status(400).json({ message: validation.error.issues[0].message });
+    return;
+  }
+
+  const title = validation.data.title;
+  const description = validation.data.description;
+  const isPublic = validation.data.isPublic;
+  const tiers = validation.data.tiers;
 
   try {
     const tierList = await TierList.findById(tierListId);
